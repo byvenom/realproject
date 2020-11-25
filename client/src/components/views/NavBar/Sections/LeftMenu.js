@@ -15,7 +15,7 @@ function LeftMenu(props) {
     <Menu.Item key="subscription">
       <a href="/video/subscription">구독영상</a>
     </Menu.Item>
-    <Menu.Item key="upload">
+    <Menu.Item key="videoupload">
       <a href="/video/upload">업로드</a>
     </Menu.Item>
     </SubMenu>
@@ -23,8 +23,16 @@ function LeftMenu(props) {
     <Menu.Item key="movie">
       <a href="/movie">영화정보</a>
     </Menu.Item>
-    <Menu.Item key="favorite">
+    <Menu.Item key="moviefavorite">
       <a href="/movie/favorite">담긴영화</a>
+    </Menu.Item>
+    </SubMenu>
+    <SubMenu title={<span><a href="/chart" style={{textDecoration:'inherit' , color:'inherit'}}>차트</a></span>}>
+    <Menu.Item key="chart">
+      <a href="/chart">내차트</a>
+    </Menu.Item>
+    <Menu.Item key="chartupload">
+      <a href="/chart/upload">차트업로드</a>
     </Menu.Item>
     </SubMenu>
   </Menu>

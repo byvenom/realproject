@@ -2,17 +2,19 @@ import React,{useState,useEffect} from 'react'
 import {Card, Avatar, Col, Typography,Row} from 'antd';
 import axios from 'axios';
 import {Line} from 'react-chartjs-2';
+import {useSelector} from 'react-redux';
 const {Title} = Typography;
 const { Meta} = Card;
 function ChartPage() {
-    const [Charts, setCharts] = useState([])
-    const [DataName, setDataName] = useState([])
-    const [Data,setData] = useState([])
-
+    const user = useSelector(state => state.user);
+    const [Charts, setCharts] = useState([]) 
     useEffect(() => {
-       axios.post('/api/chart/getMyCharts')
+    
+    const variables = {writer:localStorage.getItem('userId')}
+       axios.post('/api/chart/getMyCharts',variables)
        .then(response => {
            setCharts(response.data.charts);
+          
        })
     }, [])
     const renderCards = Charts.map((chart,index) =>{
@@ -26,7 +28,15 @@ function ChartPage() {
                 legend: {
                   display: false,
                   position: "right"
-                }
+                },
+                scales: {
+                    xAxes: [{
+                      display: false
+                    }],
+                    yAxes: [{
+                      display: false
+                    }],
+                  }
               }}
               data={{
                 labels: chart.data.map(item =>item.name),
@@ -63,7 +73,7 @@ function ChartPage() {
 
     return (
         <div style={{ width: '85%', margin: '3rem auto'}}>
-           <Title level={2} > 차트 목록</Title>
+           <Title level={2} > 내 차트</Title>
            <hr />
            <Row gutter={[32, 16]}>
             {renderCards}
