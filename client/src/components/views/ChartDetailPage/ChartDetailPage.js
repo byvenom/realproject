@@ -50,10 +50,11 @@ function ChartDetailPage(props) {
         Axios.post('/api/chart/getChartDetail',variable)
         .then(response=> {
             if(response && response.data){ 
-                setChartTitle(response.data.chartDetail.title)
-                setDataName(response.data.chartDetail.data.map(item => item.name))
-                setData(response.data.chartDetail.data.map(item=> item.value))
-                setNextId(response.data.chartDetail.data.length)
+                const data=response.data.chartDetail.data;
+                setChartTitle(data.title)
+                setDataName(data.map(item => item.name))
+                setData(data.map(item=> item.value))
+                setNextId(data.length)
             }
             else {
                 alert('차트 정보 가져오기 실패')
