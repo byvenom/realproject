@@ -72,7 +72,8 @@ function ChartDetailPage(props) {
                     hoverBorderWidth: 3,
                     backgroundColor: 
                       "rgba(238, 102, 121, 1)",
-                    fill: false
+                    fill: false,
+                    
                   }
                 ]
     }
@@ -101,6 +102,7 @@ function ChartDetailPage(props) {
                       display: false,
                       position: "right"
                     }
+                    
                   }}
                   data={expData}
                   height={100}
@@ -151,10 +153,13 @@ function ChartDetailPage(props) {
             <Form onSubmit={onSubmit}>
         <br />
         <br />
-        <label>데이터명/데이터값</label>  <br /> <b style={{color:'red'}}>데이터명/데이터값 형식으로 입력해주세요 데이터값은 숫자만 입력가능합니다 ex. 11월25일/180 </b>
+        <label>데이터명/데이터값</label>  <br /> <b style={{color:'red'}}>데이터명/데이터값 형식으로 입력해주세요 데이터값은 숫자만 입력가능합니다 ex. 11월25일/180 
+        </b>
         <Input style={{width:"150px"}} value={inputText} onChange={onChange} onKeyPress={onKeypresshandler}/>
         &nbsp;<Button onClick={onClick}>추가</Button>
         <div>{nameList}</div>
+        { names.length!==0 &&
+            <b style={{color:'red'}}>더블 클릭 하여 데이터 제거</b>}
         <br />
         <br />
         <Button type="primary" size="large" onClick={onSubmit}>

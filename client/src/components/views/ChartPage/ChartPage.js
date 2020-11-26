@@ -18,7 +18,9 @@ function ChartPage() {
        })
     }, [])
     const renderCards = Charts.map((chart,index) =>{
-        
+        const r = Math.floor(Math.random() * 255);
+        const g = Math.floor(Math.random() * 255);
+        const b = Math.floor(Math.random() * 255);
       
     return  <React.Fragment key={index}><Col lg={6} md={8} xs={24}>
     <a href={` /chart/detail/${chart._id}`}>
@@ -47,8 +49,10 @@ function ChartPage() {
                     borderWidth: 2,
                     hoverBorderWidth: 3,
                     backgroundColor: 
-                      "rgba(238, 102, 121, 1)",
-                    fill: true
+                      `rgb(${r},${g},${b})`,
+                    fill: true,
+                    borderColor:'white',
+                    hoverBorderColor:'black'
                   }
                 ]
               }}

@@ -87,6 +87,8 @@ function UploadChartPage(props) {
             <Input style={{width:"150px"}} value={inputText} onChange={onChange} onKeyPress={onKeypresshandler}/>
             &nbsp;<Button onClick={onClick}>추가</Button>
             <div>{nameList}</div>
+            { names.length!==0 &&
+                <b style={{color:'red'}}>더블 클릭 하여 데이터 제거</b>}
             <br />
             <br />
             <Button type="primary" size="large" onClick={onSubmit}>
