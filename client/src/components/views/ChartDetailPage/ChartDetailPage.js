@@ -9,14 +9,16 @@ function ChartDetailPage(props) {
     const chartId = props.match.params.chartId;
     const variable = { chartId:chartId}
     const [ChartTitle, setChartTitle] = useState("");
-   
+    const [ChartDetail, setChartDetail] = useState([]);
     const [DataName, setDataName] = useState([]);
     const [Data, setData] = useState([]);
     const [names, setNames] = useState([]);
     const [inputText, setInputText] = useState('');
     const [nextId, setNextId] = useState(0);
-    
-    
+    const [Average, setAverage] = useState(0);
+    const [state, setstate] = useState(false);
+    const [stateValue1, setstateValue1] = useState("")
+    const [stateValue2, setstateValue2] = useState("none")
       const onChange = e => setInputText(e.target.value);
       const onClick = () => {
         const chk=inputText.split("/")
@@ -33,7 +35,11 @@ function ChartDetailPage(props) {
         setInputText('');
         
       };
-    
+    const onChangePage = e => {
+        e.preventDefault();
+        setstate(!state)
+        console.log()
+    }
       const nameList = names.map(name => (
         <Input style={{width:"150px"}} key={name.id} value={name.name+"/"+name.value} onDoubleClick={() => onRemove(name.id)}/>
         ));
@@ -46,21 +52,37 @@ function ChartDetailPage(props) {
             onClick();
         }
     }
+   
     useEffect(() => {
+        if(state){
+            setstateValue1("none")
+            setstateValue2("")
+        }else{
+            setstateValue1("")
+            setstateValue2("none")
+        }
         Axios.post('/api/chart/getChartDetail',variable)
         .then(response=> {
-            if(response && response.data){ 
-                const data=response.data.chartDetail.data;
+            if(response && response.data){
+                const data=response.data.chartDetail;
+                setChartDetail(data.data)
                 setChartTitle(data.title)
-                setDataName(data.map(item => item.name))
-                setData(data.map(item=> item.value))
-                setNextId(data.length)
+                setDataName(data.data.map(item => item.name))
+                setData(data.data.map(item=> item.value))
+                setNextId(data.data.length)
+                const ssum = data.data.reduce((prev,next)=> prev + parseFloat(next.value),0);
+                setAverage((ssum / data.data.length).toFixed(2))
+                
             }
             else {
                 alert('차트 정보 가져오기 실패')
             }
         })
-    }, [])
+
+         
+
+        
+    }, [state])
 
     const expData = {
         labels: DataName,
@@ -109,7 +131,7 @@ function ChartDetailPage(props) {
                 
                 />
                
-            </div>
+            </div>;
             const onSubmit = (e) =>{
                 e.preventDefault();
                if(names.length===0){
@@ -131,24 +153,95 @@ function ChartDetailPage(props) {
                     }
                 })
         
-            }     
+            }
+            
+            const renderDatas = 
+            <div>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td>제목</td>
+                        <td colSpan={ChartDetail.length}><Input value={ChartTitle}/></td>
+                    </tr>
+                    <tr>
+                        <td>데이터 ID</td>
+                {ChartDetail && 
+                    
+                    ChartDetail.map((item,i) => (
+                        <td key={i}><Input value={item.id} /></td>
+                       
+                    )
+                        
+                    )
+                        
+                            
+                        
+                        
+                    
+                }
+                </tr> 
+                <tr>
+                <td>데이터 이름</td>
+        {ChartDetail && 
+            
+            ChartDetail.map((item,i) => (
+                <td key={i}><Input value={item.name}/></td>
+               
+            )
+                
+            )
+                
+                    
+                
+                
+            
+        }
+        </tr>
+        <tr>
+        <td>데이터 값</td>
+{ChartDetail && 
+    
+    ChartDetail.map((item,i) => (
+        <td key={i}><Input value={item.value}/></td>
+       
+    )
+        
+    )
+        
+            
+        
+        
+    
+}
+</tr>
+</tbody>
+</table>
+
+<div style={{ textAlign:'center', marginTop:'3rem',marginBottom:'2rem',maxWidth:"400px" , margin:'2rem auto'}}><Button type="primary" onClick={onChangePage}>이전으로</Button></div> 
+</div>
+
     
     return (
        
         <div>
-        <div style={{ textAlign:'center', marginBottom:'2rem'}}>
-        <Title level={2}>{ChartTitle}</Title>
+        <div style={{display:stateValue1}}>
+        <div style={{ textAlign:'center', marginBottom:'2rem',maxWidth:"400px" , margin:'2rem auto'}}>
+        <Title level={2} style={{ borderStyle: 'solid', borderColor: "DodgerBlue", backgroundColor:"rgba(30, 144, 255, 0.2)", borderWidth:"2px", padding:"12px", wordBreak: "break-all"}}>{ChartTitle}</Title>
         </div>
         <div align="right">
+        <Button style={{marginRight:"1rem"}} type="primary" onClick={onChangePage}>수정하기</Button>
         <Popconfirm title="정말로 삭제 하시겠습니까?" okText="Yes" cancelText="No" onConfirm={removeChart}><Button type="danger" >삭제하기</Button> </Popconfirm>
         </div>
 
     
       
         {renderCards}
+        <div style={{ textAlign:'center',marginTop:'2rem'}}>
+            <Title level={4} style={{ color: "blue"}}>데이터 평균 : {Average} </Title>
+        </div> 
         <div style={{ maxWidth:'700px', margin:'2rem auto'}}>
-        <div style={{ textAlign:'center', marginBottom:'2rem'}}>
-            <Title level={2}>데이터 추가</Title>
+        <div style={{ maxWidth:'400px',margin:'2rem auto',textAlign:'center', marginBottom:'2rem'}}>
+            <Title level={2} style={{ borderStyle: 'solid', borderColor: "Tomato", backgroundColor:"rgba(255, 99, 71, 0.2)", borderWidth:"2px", padding:"12px", wordBreak: "break-all"}}>데이터 추가</Title>
         </div> 
             <Form onSubmit={onSubmit}>
         <br />
@@ -168,6 +261,21 @@ function ChartDetailPage(props) {
             </Form>
         
         
+    </div>
+    </div>
+    <div style={{display:stateValue2}}>
+    <div style={{ textAlign:'center', marginBottom:'2rem',maxWidth:"400px" , margin:'2rem auto'}}>
+        <Title level={2} style={{ borderStyle: 'solid', borderColor: "DodgerBlue", backgroundColor:"rgba(30, 144, 255, 0.2)", borderWidth:"2px", padding:"12px", wordBreak: "break-all"}}>수정하기</Title>
+    </div>
+    <Form>
+    
+  
+    
+            {renderDatas}
+   
+  
+   
+    </Form>
     </div>
         </div>
     )
